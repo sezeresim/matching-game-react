@@ -39,9 +39,9 @@ export const fruits = [
     name: 'Watermelon',
     image: '/images/watermelon.png',
   },
-  {
+  /*  {
     id: 'kiwi',
     name: 'Kiwi',
     image: '/images/kiwi.png',
-  },
+  }, */
 ];
