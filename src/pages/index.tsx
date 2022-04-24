@@ -49,20 +49,61 @@ export default function HomePage() {
   );
   const [timer, setTimer] = React.useState(60);
 
-  React.useEffect(() => {
+  /*  React.useEffect(() => {
     const interval = setInterval(() => {
-      setTimer((timer) => timer - 1);
+      if (timer > 0) {
+        setTimer((timer) => timer - 1);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, []); */
 
-  const handleClickCard = (id: string) => {
-    setFruitsData(
-      fruitsData.map((fruit) =>
-        fruit.id === id ? { ...fruit, isOpen: !fruit.isOpen } : fruit
-      )
-    );
+  const [selectedCards, setSelectedCards] = React.useState<any>([]);
+
+  const handleClickCard = (el: any) => {
+    let newData;
+
+    if (selectedCards.length < 2) {
+      setSelectedCards([...selectedCards, el]);
+      console.log('newData ~ newData', [...selectedCards, el]);
+      newData = fruitsData.map((fruit) => {
+        const isRemoved =
+          selectedCards[0]?.name === fruit.name && fruit.name === el.name;
+        console.log('Match Status=', isRemoved);
+        if (selectedCards[0]?.id === fruit.id || fruit.id === el.id) {
+          return {
+            ...fruit,
+            isOpen: true,
+            isRemoved,
+          };
+        } else {
+          return {
+            ...fruit,
+            isOpen: false,
+          };
+        }
+      });
+    } else {
+      setSelectedCards([el]);
+      console.log('newData ~ newData', [el]);
+      newData = fruitsData.map((fruit) => {
+        if (fruit.id === el.id) {
+          return {
+            ...fruit,
+            isOpen: true,
+          };
+        } else {
+          return {
+            ...fruit,
+            isOpen: false,
+          };
+        }
+      });
+    }
+
+    setFruitsData(newData);
+
     sound.play();
   };
 
@@ -80,12 +121,17 @@ export default function HomePage() {
         {fruitsData.map((el) => (
           <div
             key={el.id}
-            className='rounded-xl bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA] p-[6px] shadow-lg '
+            className={cn([
+              !el.isRemoved &&
+                'rounded-xl bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA] p-[6px] shadow-lg',
+              el.isRemoved && 'bg-white',
+            ])}
           >
             <div
               className={cn([
                 'item-center duration-400 flex cursor-pointer justify-center rounded-xl   bg-white text-white transition-all',
                 el.isOpen ? 'origin-center' : 'blur-2xl',
+                el.isRemoved && 'hidden',
               ])}
             >
               <Image
@@ -93,7 +139,7 @@ export default function HomePage() {
                 width={200}
                 height={200}
                 alt={el.name}
-                onClick={() => handleClickCard(el.id)}
+                onClick={() => handleClickCard(el)}
               />
             </div>
           </div>
