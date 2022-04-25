@@ -1,45 +1,50 @@
 import cn from 'classnames';
-import { Howl } from 'howler';
 import Image from 'next/image';
 import * as React from 'react';
 
+import { cardVoice } from '@/lib/sound';
+
 import { fruits } from '@/data/fruits';
 
-const sound = new Howl({
-  src: ['/sound.wav'],
-  html5: true,
-  volume: 0.5,
-});
+import { ICard } from '@/interfaces';
+import { shuffle } from '@/utils/shuffle';
+export const MENU_STATUS = {
+  START_GAME: 'START_GAME',
+  PLAYING_GAME: 'PLAYPLAYING_GAMEING',
+  END_GAME: 'END_GAME',
+};
 
-function shuffle(array: any[]) {
-  let currentIndex = array.length,
-    randomIndex;
+const actionTypes = {
+  START_GAME: 'START_GAME',
+};
 
-  // While there remain elements to shuffle.
-  while (currentIndex != 0) {
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
+const initialState = {
+  status: MENU_STATUS.START_GAME,
+};
 
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
+function reducer(state: any, action: any) {
+  const { type, payload } = action;
+  switch (type) {
+    case actionTypes.START_GAME:
+      return {
+        ...state,
+        status: MENU_STATUS.PLAYING_GAME,
+      };
+    default:
+      return state;
   }
-
-  return array;
 }
-
 export default function HomePage() {
-  const [fruitsData, setFruitsData] = React.useState(
+  const [game, dispatch] = React.useReducer(reducer, initialState);
+
+  const [fruitsData, setFruitsData] = React.useState<ICard[]>(
     shuffle(
       [
         ...fruits.map((el) => ({
           ...el,
         })),
         ...fruits.map((el) => ({ ...el, clone: 2 })),
-      ].map((fruit: any) => ({
+      ].map((fruit: ICard) => ({
         ...fruit,
         id: fruit.id + fruit.clone,
         isOpen: false,
@@ -47,6 +52,7 @@ export default function HomePage() {
       }))
     )
   );
+  const [voiceLevel, setVoiceLevel] = React.useState<number>(5);
   const [timer, setTimer] = React.useState(60);
 
   /*  React.useEffect(() => {
@@ -61,13 +67,15 @@ export default function HomePage() {
 
   const [selectedCards, setSelectedCards] = React.useState<any>([]);
 
-  const handleClickCard = (el: any) => {
+  const handleClickCard = (el: ICard) => {
     let newData;
-
+    if (el.isOpen) {
+      return;
+    }
     if (selectedCards.length < 2) {
       setSelectedCards([...selectedCards, el]);
       console.log('newData ~ newData', [...selectedCards, el]);
-      newData = fruitsData.map((fruit) => {
+      newData = fruitsData.map((fruit: ICard) => {
         const isRemoved =
           selectedCards[0]?.name === fruit.name && fruit.name === el.name;
         console.log('Match Status=', isRemoved);
@@ -104,47 +112,93 @@ export default function HomePage() {
 
     setFruitsData(newData);
 
-    sound.play();
+    cardVoice(voiceLevel).play();
+  };
+
+  const renderGame = (status: any) => {
+    switch (status) {
+      case MENU_STATUS.START_GAME:
+        return (
+          <div className='flex h-screen w-full flex-col items-center justify-center'>
+            <div>
+              <p className='mb-4 text-2xl'>welcome</p>
+            </div>
+            <div className='border p-12 shadow-xl'>
+              <button className=' bg-cyan-400 p-5 text-white hover:rotate-3 hover:bg-slate-800' onClick={()=>{
+                dispatch({type: actionTypes.START_GAME})
+              }}>
+                Game Start
+              </button>
+            </div>
+          </div>
+        );
+      case MENU_STATUS.PLAYING_GAME:
+        return (
+          <>
+            <div>
+              {/* sound bar */}
+              <div className='flex'>
+                <label className='flex items-center'>Voice:{voiceLevel}</label>
+                <input
+                  type='range'
+                  step={1}
+                  min={0}
+                  max={10}
+                  className='w-1/4'
+                  onChange={(e) => {
+                    setVoiceLevel(Number(e.target.value));
+                  }}
+                />
+              </div>
+            </div>
+            {/* timer */}
+            <div className='flex justify-between'>
+              <p className='my-3 font-mono text-2xl font-semibold'>{timer}</p>
+              <p className='my-3 font-mono text-2xl font-semibold'>
+                {fruitsData.filter((fruit: ICard) => fruit.isRemoved).length /
+                  2}{' '}
+                / {fruitsData.length / 2}
+              </p>
+            </div>
+            <div className='grid grid-cols-4 gap-2'>
+              {fruitsData.map((el: ICard) => (
+                <div
+                  key={el.id}
+                  className={cn([
+                    'rounded-xl  border p-1',
+                    el.isRemoved
+                      ? 'bg-white'
+                      : 'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
+                  ])}
+                >
+                  <div
+                    className={cn([
+                      'cu-card',
+                      el.isOpen &&
+                        'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
+                    ])}
+                    onClick={() => handleClickCard(el)}
+                  >
+                    {!el.isRemoved && el.isOpen && (
+                      <Image
+                        src={el.image}
+                        width={200}
+                        height={200}
+                        alt={el.name}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+    }
   };
 
   return (
     <main className='container mx-auto px-2 py-5 lg:px-52'>
-      {/* timer */}
-      <div className='flex justify-between'>
-        <p className='my-3 font-mono text-2xl font-semibold'>{timer}</p>
-        <p className='my-3 font-mono text-2xl font-semibold'>
-          {fruitsData.filter((fruit) => fruit.isRemoved).length / 2} /{' '}
-          {fruitsData.length / 2}
-        </p>
-      </div>
-      <div className='grid grid-cols-4 gap-2'>
-        {fruitsData.map((el) => (
-          <div
-            key={el.id}
-            className={cn([
-              !el.isRemoved &&
-                'rounded-xl bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA] p-[6px] shadow-lg',
-              el.isRemoved && 'bg-white',
-            ])}
-          >
-            <div
-              className={cn([
-                'item-center duration-400 flex cursor-pointer justify-center rounded-xl   bg-white text-white transition-all',
-                el.isOpen ? 'origin-center' : 'blur-2xl',
-                el.isRemoved && 'hidden',
-              ])}
-            >
-              <Image
-                src={el.image}
-                width={200}
-                height={200}
-                alt={el.name}
-                onClick={() => handleClickCard(el)}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      {renderGame(game.status)}
     </main>
   );
 }
