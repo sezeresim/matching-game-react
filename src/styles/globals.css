@@ -8,9 +8,20 @@
 
 @layer components {
   .cu-card {
-    @apply flex min-h-[200px] cursor-pointer items-center justify-center rounded-xl bg-white  text-white transition-all duration-200;
+    @apply flex cursor-pointer items-center justify-center rounded-xl bg-white  text-white transition-all duration-200;
   }
   .cu-card:hover {
     @apply -skew-y-6 skew-x-6 scale-105 bg-gradient-to-tl from-lime-700 via-sky-400 to-gray-900;
+  }
+
+  /* Card */
+  .pushable {
+    @apply cursor-pointer rounded-xl p-0 outline-offset-4;
+  }
+  .front {
+    @apply block -translate-y-2 rounded-xl  py-3 px-10 text-xl text-white;
+  }
+  .pushable:active .front {
+    @apply -translate-y-1;
   }
 }

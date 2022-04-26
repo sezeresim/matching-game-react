@@ -6,6 +6,8 @@ import { cardVoice } from '@/lib/sound';
 
 import { fruits } from '@/data/fruits';
 
+import { Button } from '@/components/buttons';
+
 import { ICard } from '@/interfaces';
 import { shuffle } from '@/utils/shuffle';
 export const MENU_STATUS = {
@@ -120,21 +122,20 @@ export default function HomePage() {
       case MENU_STATUS.START_GAME:
         return (
           <div className='flex h-screen w-full flex-col items-center justify-center'>
-            <div>
-              <p className='mb-4 text-2xl'>welcome</p>
-            </div>
-            <div className='border p-12 shadow-xl'>
-              <button className=' bg-cyan-400 p-5 text-white hover:rotate-3 hover:bg-slate-800' onClick={()=>{
-                dispatch({type: actionTypes.START_GAME})
-              }}>
+            <div className='w-3/4 rounded border bg-white px-12 py-20 shadow-xl md:w-1/2'>
+              <Button
+                variant='primary'
+                className='w-full'
+                onClick={() => dispatch({ type: actionTypes.START_GAME })}
+              >
                 Game Start
-              </button>
+              </Button>
             </div>
           </div>
         );
       case MENU_STATUS.PLAYING_GAME:
         return (
-          <>
+          <div className='max-h-screen'>
             <div>
               {/* sound bar */}
               <div className='flex'>
@@ -160,12 +161,12 @@ export default function HomePage() {
                 / {fruitsData.length / 2}
               </p>
             </div>
-            <div className='grid grid-cols-4 gap-2'>
+            <div className='grid grid-cols-4 gap-2 xl:px-28'>
               {fruitsData.map((el: ICard) => (
                 <div
                   key={el.id}
                   className={cn([
-                    'rounded-xl  border p-1',
+                    'rounded-xl border p-1',
                     el.isRemoved
                       ? 'bg-white'
                       : 'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
@@ -173,7 +174,7 @@ export default function HomePage() {
                 >
                   <div
                     className={cn([
-                      'cu-card',
+                      'cu-card aspect-square',
                       el.isOpen &&
                         'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
                     ])}
@@ -182,23 +183,25 @@ export default function HomePage() {
                     {!el.isRemoved && el.isOpen && (
                       <Image
                         src={el.image}
-                        width={200}
-                        height={200}
                         alt={el.name}
+                        width={150}
+                        height={150}
                       />
                     )}
                   </div>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         );
     }
   };
 
   return (
-    <main className='container mx-auto px-2 py-5 lg:px-52'>
-      {renderGame(game.status)}
+    <main className='bg-gradient-to-t from-teal-700 via-teal-400 to-teal-100'>
+      <div className='container mx-auto max-h-screen min-h-screen  lg:px-52'>
+        {renderGame(game.status)}
+      </div>
     </main>
   );
 }
