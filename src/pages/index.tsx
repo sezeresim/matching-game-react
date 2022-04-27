@@ -48,18 +48,16 @@ export default function HomePage() {
         const isRemoved =
           selectedCards[0]?.name === fruit.name && fruit.name === el.name;
         console.log('Match Status=', isRemoved);
-        if (selectedCards[0]?.id === fruit.id || fruit.id === el.id) {
-          return {
-            ...fruit,
-            isOpen: true,
-            isRemoved,
-          };
-        } else {
-          return {
-            ...fruit,
-            isOpen: false,
-          };
-        }
+        return selectedCards[0]?.id === fruit.id || fruit.id === el.id
+          ? {
+              ...fruit,
+              isOpen: true,
+              isRemoved,
+            }
+          : {
+              ...fruit,
+              isOpen: false,
+            };
       });
     } else {
       dispatch(updateCards([el]));
@@ -134,15 +132,13 @@ export default function HomePage() {
                   className={cn([
                     'rounded-xl border p-1',
                     el.isRemoved
-                      ? 'bg-white'
+                      ? 'bg-red-400'
                       : 'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
                   ])}
                 >
                   <div
-                    className={cn([
-                      'cu-card aspect-square',
-                      el.isOpen &&
-                        'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
+                    className={cn('cu-card aspect-square', [
+                      el.isRemoved && 'bg-red-400',
                     ])}
                     onClick={() => handleClickCard(el)}
                   >
