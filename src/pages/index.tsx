@@ -4,60 +4,26 @@ import * as React from 'react';
 
 import { cardVoice } from '@/lib/sound';
 
-import { fruits } from '@/data/fruits';
-
 import { Button } from '@/components/buttons';
 
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  gameStart,
+  gameState,
+  IGameStatus,
+  updateCards,
+} from '@/store/slices/game.slice';
+
 import { ICard } from '@/interfaces';
-import { shuffle } from '@/utils/shuffle';
-export const MENU_STATUS = {
-  START_GAME: 'START_GAME',
-  PLAYING_GAME: 'PLAYPLAYING_GAMEING',
-  END_GAME: 'END_GAME',
-};
 
-const actionTypes = {
-  START_GAME: 'START_GAME',
-};
-
-const initialState = {
-  status: MENU_STATUS.START_GAME,
-};
-
-function reducer(state: any, action: any) {
-  const { type, payload } = action;
-  switch (type) {
-    case actionTypes.START_GAME:
-      return {
-        ...state,
-        status: MENU_STATUS.PLAYING_GAME,
-      };
-    default:
-      return state;
-  }
-}
 export default function HomePage() {
-  const [game, dispatch] = React.useReducer(reducer, initialState);
+  const dispatch = useAppDispatch();
+  const { status, cards } = useAppSelector(gameState);
 
-  const [fruitsData, setFruitsData] = React.useState<ICard[]>(
-    shuffle(
-      [
-        ...fruits.map((el) => ({
-          ...el,
-        })),
-        ...fruits.map((el) => ({ ...el, clone: 2 })),
-      ].map((fruit: ICard) => ({
-        ...fruit,
-        id: fruit.id + fruit.clone,
-        isOpen: false,
-        isRemoved: false,
-      }))
-    )
-  );
   const [voiceLevel, setVoiceLevel] = React.useState<number>(5);
   const [timer, setTimer] = React.useState(60);
 
-  /*  React.useEffect(() => {
+  React.useEffect(() => {
     const interval = setInterval(() => {
       if (timer > 0) {
         setTimer((timer) => timer - 1);
@@ -65,9 +31,10 @@ export default function HomePage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []); */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const [selectedCards, setSelectedCards] = React.useState<any>([]);
+  const [selectedCards, setSelectedCards] = React.useState<ICard[]>([]);
 
   const handleClickCard = (el: ICard) => {
     let newData;
@@ -77,7 +44,7 @@ export default function HomePage() {
     if (selectedCards.length < 2) {
       setSelectedCards([...selectedCards, el]);
       console.log('newData ~ newData', [...selectedCards, el]);
-      newData = fruitsData.map((fruit: ICard) => {
+      newData = cards.map((fruit: ICard) => {
         const isRemoved =
           selectedCards[0]?.name === fruit.name && fruit.name === el.name;
         console.log('Match Status=', isRemoved);
@@ -95,9 +62,10 @@ export default function HomePage() {
         }
       });
     } else {
+      dispatch(updateCards([el]));
       setSelectedCards([el]);
       console.log('newData ~ newData', [el]);
-      newData = fruitsData.map((fruit) => {
+      newData = cards.map((fruit) => {
         if (fruit.id === el.id) {
           return {
             ...fruit,
@@ -111,29 +79,28 @@ export default function HomePage() {
         }
       });
     }
-
-    setFruitsData(newData);
+    dispatch(updateCards(newData));
 
     cardVoice(voiceLevel).play();
   };
 
-  const renderGame = (status: any) => {
+  const renderGame = (status: IGameStatus) => {
     switch (status) {
-      case MENU_STATUS.START_GAME:
+      case 'menu':
         return (
           <div className='flex h-screen w-full flex-col items-center justify-center'>
             <div className='w-3/4 rounded border bg-white px-12 py-20 shadow-xl md:w-1/2'>
               <Button
                 variant='primary'
                 className='w-full'
-                onClick={() => dispatch({ type: actionTypes.START_GAME })}
+                onClick={() => dispatch(gameStart())}
               >
                 Game Start
               </Button>
             </div>
           </div>
         );
-      case MENU_STATUS.PLAYING_GAME:
+      case 'playing':
         return (
           <div className='max-h-screen'>
             <div>
@@ -156,13 +123,12 @@ export default function HomePage() {
             <div className='flex justify-between'>
               <p className='my-3 font-mono text-2xl font-semibold'>{timer}</p>
               <p className='my-3 font-mono text-2xl font-semibold'>
-                {fruitsData.filter((fruit: ICard) => fruit.isRemoved).length /
-                  2}{' '}
-                / {fruitsData.length / 2}
+                {cards.filter((fruit: ICard) => fruit.isRemoved).length / 2} /{' '}
+                {cards.length / 2}
               </p>
             </div>
             <div className='grid grid-cols-4 gap-2 xl:px-28'>
-              {fruitsData.map((el: ICard) => (
+              {cards.map((el: ICard) => (
                 <div
                   key={el.id}
                   className={cn([
@@ -200,7 +166,7 @@ export default function HomePage() {
   return (
     <main className='bg-gradient-to-t from-teal-700 via-teal-400 to-teal-100'>
       <div className='container mx-auto max-h-screen min-h-screen  lg:px-52'>
-        {renderGame(game.status)}
+        {renderGame(status)}
       </div>
     </main>
   );
