@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import * as React from 'react';
 
@@ -100,70 +101,87 @@ export default function HomePage() {
         );
       case 'playing':
         return (
-          <div className='max-h-screen'>
-            <div>
-              {/* sound bar */}
-              <div className='flex'>
-                <label className='flex items-center'>Voice:{voiceLevel}</label>
-                <input
-                  type='range'
-                  step={1}
-                  min={0}
-                  max={10}
-                  className='w-1/4'
-                  onChange={(e) => {
-                    setVoiceLevel(Number(e.target.value));
-                  }}
-                />
+          <motion.div
+            animate={{
+              opacity: [0, 0.5, 1],
+              scale: [1, 1.4, 1],
+            }}
+          >
+            {' '}
+            <div className='max-h-screen'>
+              <div>
+                {/* sound bar */}
+                <div className='flex'>
+                  <label className='flex items-center'>
+                    Voice:{voiceLevel}
+                  </label>
+                  <input
+                    type='range'
+                    step={1}
+                    min={0}
+                    max={10}
+                    className='w-1/4'
+                    onChange={(e) => {
+                      setVoiceLevel(Number(e.target.value));
+                    }}
+                  />
+                </div>
+              </div>
+              {/* timer */}
+              <div className='flex justify-between'>
+                <p className='my-3 font-mono text-2xl font-semibold'>{timer}</p>
+                <p className='my-3 font-mono text-2xl font-semibold'>
+                  {cards.filter((fruit: ICard) => fruit.isRemoved).length / 2} /{' '}
+                  {cards.length / 2}
+                </p>
+              </div>
+              <div className='grid grid-cols-4 gap-2 xl:px-28'>
+                {cards.map((el: ICard) => (
+                  <div
+                    key={el.id}
+                    className={cn([
+                      'rounded-xl border p-1',
+                      el.isRemoved
+                        ? 'bg-red-400'
+                        : 'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
+                    ])}
+                  >
+                    <div
+                      className={cn('cu-card aspect-square', [
+                        el.isRemoved && 'bg-red-400',
+                      ])}
+                      onClick={() => handleClickCard(el)}
+                    >
+                      {!el.isRemoved && el.isOpen && (
+                        <Image
+                          src={el.image}
+                          alt={el.name}
+                          width={150}
+                          height={150}
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            {/* timer */}
-            <div className='flex justify-between'>
-              <p className='my-3 font-mono text-2xl font-semibold'>{timer}</p>
-              <p className='my-3 font-mono text-2xl font-semibold'>
-                {cards.filter((fruit: ICard) => fruit.isRemoved).length / 2} /{' '}
-                {cards.length / 2}
-              </p>
-            </div>
-            <div className='grid grid-cols-4 gap-2 xl:px-28'>
-              {cards.map((el: ICard) => (
-                <div
-                  key={el.id}
-                  className={cn([
-                    'rounded-xl border p-1',
-                    el.isRemoved
-                      ? 'bg-red-400'
-                      : 'bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA]',
-                  ])}
-                >
-                  <div
-                    className={cn('cu-card aspect-square', [
-                      el.isRemoved && 'bg-red-400',
-                    ])}
-                    onClick={() => handleClickCard(el)}
-                  >
-                    {!el.isRemoved && el.isOpen && (
-                      <Image
-                        src={el.image}
-                        alt={el.name}
-                        width={150}
-                        height={150}
-                      />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </motion.div>
         );
     }
   };
 
   return (
     <main className='bg-gradient-to-t from-teal-700 via-teal-400 to-teal-100'>
-      <div className='container mx-auto max-h-screen min-h-screen  lg:px-52'>
-        {renderGame(status)}
-      </div>
+      <motion.div
+        animate={{
+          opacity: [0, 0.5, 1],
+          scale: [1, 1.4, 1],
+        }}
+      >
+        <div className='container mx-auto max-h-screen min-h-screen  lg:px-52'>
+          {renderGame(status)}
+        </div>
+      </motion.div>
     </main>
   );
 }
