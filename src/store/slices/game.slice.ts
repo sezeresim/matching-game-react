@@ -12,10 +12,12 @@ export type IGameStatus = 'menu' | 'playing' | 'gameover';
 export interface GameState {
   status: IGameStatus;
   cards: ICard[];
+  timer: number;
 }
 
 const initialState: GameState = {
   status: 'menu',
+  timer: 60,
   cards: shuffle(
     [
       ...fruits.map((el) => ({
@@ -38,12 +40,19 @@ export const gameSlice = createSlice({
     gameStart: (state) => {
       state.status = 'playing';
     },
+    gameOver: (state) => {
+      state.status = 'gameover';
+    },
     updateCards: (state, action: PayloadAction<ICard[]>) => {
       state.cards = action.payload;
     },
+    updateTimer: (state, action: PayloadAction<number>) => {
+      state.timer = state.timer + action.payload;
+    },
   },
 });
-export const { gameStart, updateCards } = gameSlice.actions;
+export const { gameStart, updateCards, updateTimer, gameOver } =
+  gameSlice.actions;
 
 export const gameState = (state: RootState) => state.game;
 
