@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { cardVoice } from '@/lib/sound';
 
 import { Button } from '@/components/buttons';
+import Seo from '@/components/Seo';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -229,17 +230,20 @@ export default function HomePage() {
   };
 
   return (
-    <main className='bg-gradient-to-t from-teal-300 via-teal-200 to-teal-100'>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: [0, 0.8, 1],
-        }}
-      >
-        <div className='container mx-auto max-h-screen min-h-screen px-2 lg:px-52'>
-          {renderGame(status)}
-        </div>
-      </motion.div>
-    </main>
+    <>
+      <Seo templateTitle='Memory Game' />
+      <main className='bg-gradient-to-t from-teal-300 via-teal-200 to-teal-100'>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: [0, 0.8, 1],
+          }}
+        >
+          <div className='container mx-auto max-h-screen min-h-screen px-2 lg:px-52'>
+            {renderGame(status)}
+          </div>
+        </motion.div>
+      </main>
+    </>
   );
 }
