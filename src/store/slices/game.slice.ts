@@ -13,11 +13,17 @@ export interface GameState {
   status: IGameStatus;
   cards: ICard[];
   timer: number;
+  score: number;
+  selectedCards: ICard[];
+  isSuccess: boolean;
 }
 
 const initialState: GameState = {
   status: 'menu',
   timer: 60,
+  score: 0,
+  selectedCards: [],
+  isSuccess: false,
   cards: shuffle(
     [
       ...fruits.map((el) => ({
@@ -40,8 +46,10 @@ export const gameSlice = createSlice({
     gameStart: (state) => {
       state.status = 'playing';
     },
-    gameOver: (state) => {
+    gameReset: () => initialState,
+    gameOver: (state, action: PayloadAction<boolean>) => {
       state.status = 'gameover';
+      state.isSuccess = action.payload;
     },
     updateCards: (state, action: PayloadAction<ICard[]>) => {
       state.cards = action.payload;
@@ -49,10 +57,23 @@ export const gameSlice = createSlice({
     updateTimer: (state, action: PayloadAction<number>) => {
       state.timer = state.timer + action.payload;
     },
+    updateScore: (state, action: PayloadAction<number>) => {
+      state.score = state.score + action.payload;
+    },
+    updateSelectedCards: (state, action: PayloadAction<ICard[]>) => {
+      state.selectedCards = action.payload;
+    },
   },
 });
-export const { gameStart, updateCards, updateTimer, gameOver } =
-  gameSlice.actions;
+export const {
+  gameStart,
+  updateCards,
+  updateTimer,
+  gameOver,
+  updateScore,
+  updateSelectedCards,
+  gameReset,
+} = gameSlice.actions;
 
 export const gameState = (state: RootState) => state.game;
 
