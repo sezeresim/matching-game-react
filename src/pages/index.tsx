@@ -44,9 +44,10 @@ export default function HomePage() {
         const isRemoved =
           selectedCards[0]?.name === fruit.name && fruit.name === el.name;
         console.log('Match Status=', isRemoved);
-        if (selectedCards[0]?.id === fruit.id || fruit.id === el.id) {
+        if (isRemoved) {
           dispatch(updateScore(timer));
-
+        }
+        if (selectedCards[0]?.id === fruit.id || fruit.id === el.id) {
           return {
             ...fruit,
             isOpen: true,
