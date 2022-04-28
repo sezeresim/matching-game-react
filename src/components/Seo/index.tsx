@@ -5,10 +5,10 @@ const defaultMeta = {
   title: 'Sezer Esim',
   siteName: 'Sezer Esim',
   description: 'Sezer Esim',
-  url: 'www.example.com',
+  url: 'https://matching-game-five.vercel.app/',
   type: 'website',
   robots: 'follow, index',
-  image: '/images/screenshot.png',
+  image: 'https://i.ibb.co/SxDKVbT/screnshot.png',
 };
 
 type SeoProps = {
