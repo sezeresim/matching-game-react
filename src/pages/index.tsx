@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { cardVoice } from '@/lib/sound';
 
-import { Button } from '@/components/buttons';
-import Seo from '@/components/Seo';
+import { Seo } from '@/components';
+import { Button } from '@/components/Buttons';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
