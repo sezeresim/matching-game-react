@@ -10,7 +10,7 @@ const GameMenu: React.FC<IGameMenuProps> = (props) => {
   const { onStart } = props;
   return (
     <div className='flex h-screen w-full flex-col items-center justify-center'>
-      <div className='mx-2 rounded border bg-white px-12 py-20 shadow-xl '>
+      <div className='mx-2 w-[300px] rounded border bg-white px-12 py-20 shadow-xl md:w-[600px]'>
         <Button variant='primary' className='w-full' onClick={onStart}>
           Game Start
         </Button>

@@ -10,7 +10,7 @@ interface IFormGroupProps extends React.HTMLProps<HTMLInputElement> {
 const FormGroup: FC<IFormGroupProps> = (props) => {
   const { label, error, ...rest } = props;
   return (
-    <div className='h-10'>
+    <div>
       {label && <InputLabel label={label} htmlFor={rest.name} />}
       <Input id={rest.name} {...rest} />
       {error && <InputError error={error} />}

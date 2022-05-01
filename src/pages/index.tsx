@@ -133,23 +133,22 @@ export default function HomePage() {
             }}
           >
             <div className='max-h-screen'>
-              {/* sound bar */}
-              <FormGroup
-                label={'Voice:' + voiceLevel}
-                type='range'
-                name='voiceLevel'
-                step={1}
-                min={0}
-                max={10}
-                className='w-1/4'
-                value={voiceLevel}
-                onChange={handleVoiceLevel}
-              />
-              {/* timer */}
-              <div className='flex justify-between'>
-                <p className='my-3 text-2xl font-semibold'>{timer}</p>
-                <p className='my-3 text-2xl font-semibold'>{score}</p>
+              <div className='flex items-center justify-between py-2'>
+                <FormGroup
+                  type='range'
+                  name='voiceLevel'
+                  label={'Voice Level : ' + voiceLevel}
+                  step={1}
+                  min={0}
+                  max={10}
+                  value={voiceLevel}
+                  onChange={handleVoiceLevel}
+                />
+                <p className='my-2 text-xl font-semibold'>
+                  {score} Points/{timer} Seconds
+                </p>
               </div>
+
               <div className='grid grid-cols-4 gap-3 xl:px-28'>
                 {cards.map((el: ICard) => (
                   <div
@@ -205,15 +204,7 @@ export default function HomePage() {
           }}
         >
           <div className='container mx-auto max-h-screen min-h-screen px-2 lg:px-52'>
-            {status == 'menu' && <GameMenu onStart={handleClickStart} />}
-            {status == 'gameover' && (
-              <GameGameOver
-                onRestart={handleClickRestart}
-                score={score}
-                isSuccess={isSuccess}
-              />
-            )}
-            {status == 'playing' && renderGame(status)}
+            {renderGame(status)}
           </div>
         </motion.div>
       </main>
