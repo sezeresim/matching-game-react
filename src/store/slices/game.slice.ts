@@ -16,6 +16,7 @@ export interface GameState {
   score: number;
   selectedCards: ICard[];
   isSuccess: boolean;
+  voiceLevel: number;
 }
 
 const initialState: GameState = {
@@ -37,6 +38,7 @@ const initialState: GameState = {
       isRemoved: false,
     }))
   ),
+  voiceLevel: 2,
 };
 
 export const gameSlice = createSlice({
@@ -63,6 +65,9 @@ export const gameSlice = createSlice({
     updateSelectedCards: (state, action: PayloadAction<ICard[]>) => {
       state.selectedCards = action.payload;
     },
+    updateVoiceLevel: (state, action: PayloadAction<number>) => {
+      state.voiceLevel = action.payload;
+    },
   },
 });
 export const {
@@ -73,6 +78,7 @@ export const {
   updateScore,
   updateSelectedCards,
   gameReset,
+  updateVoiceLevel,
 } = gameSlice.actions;
 
 export const gameState = (state: RootState) => state.game;

@@ -3,12 +3,13 @@
 import cn from 'classnames';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { cardVoice } from '@/lib/sound';
 
-import { Seo } from '@/components';
-import { Button } from '@/components/Buttons';
+import { Seo } from '@/components/atoms';
+import { FormGroup } from '@/components/molecules';
+import { GameGameOver, GameMenu } from '@/components/organisms';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -21,16 +22,15 @@ import {
   updateScore,
   updateSelectedCards,
   updateTimer,
+  updateVoiceLevel,
 } from '@/store/slices/game.slice';
 
 import { ICard } from '@/interfaces';
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
-  const { status, cards, timer, score, selectedCards, isSuccess } =
+  const { status, cards, timer, score, selectedCards, isSuccess, voiceLevel } =
     useAppSelector(gameState);
-
-  const [voiceLevel, setVoiceLevel] = useState<number>(5);
 
   const handleClickCard = (el: ICard) => {
     let newData;
@@ -106,34 +106,20 @@ export default function HomePage() {
   }, [timer]);
 
   /* Game ReStart */
-
   const handleClickRestart = () => {
     dispatch(gameReset());
     handleClickStart();
   };
 
+  /* Handel Voice Level */
+  const handleVoiceLevel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateVoiceLevel(Number(e.target.value)));
+  };
+
   const renderGame = (status: IGameStatus) => {
     switch (status) {
       case 'menu':
-        return (
-          <div className='flex h-screen w-full flex-col items-center justify-center'>
-            <div className='mx-2 rounded border bg-white px-12 py-20 shadow-xl '>
-              <Button
-                variant='primary'
-                className='w-full'
-                onClick={handleClickStart}
-              >
-                Game Start
-              </Button>
-              <p className='mt-2 text-sm text-red-600'>
-                Game is start with click and total time is 60 seconds.
-              </p>
-              <p>
-                Good Luck <span className='text-2xl'>👾</span>
-              </p>
-            </div>
-          </div>
-        );
+        return <GameMenu onStart={handleClickStart} />;
       case 'playing':
         return (
           <motion.div
@@ -147,28 +133,22 @@ export default function HomePage() {
             }}
           >
             <div className='max-h-screen'>
-              <div>
-                {/* sound bar */}
-                <div className='flex'>
-                  <label className='flex items-center'>
-                    Voice:{voiceLevel}
-                  </label>
-                  <input
-                    type='range'
-                    step={1}
-                    min={0}
-                    max={10}
-                    className='w-1/4'
-                    onChange={(e) => {
-                      setVoiceLevel(Number(e.target.value));
-                    }}
-                  />
-                </div>
-              </div>
+              {/* sound bar */}
+              <FormGroup
+                label={'Voice:' + voiceLevel}
+                type='range'
+                name='voiceLevel'
+                step={1}
+                min={0}
+                max={10}
+                className='w-1/4'
+                value={voiceLevel}
+                onChange={handleVoiceLevel}
+              />
               {/* timer */}
               <div className='flex justify-between'>
-                <p className='my-3 font-mono text-2xl font-semibold'>{timer}</p>
-                <p className='my-3 font-mono text-2xl font-semibold'>{score}</p>
+                <p className='my-3 text-2xl font-semibold'>{timer}</p>
+                <p className='my-3 text-2xl font-semibold'>{score}</p>
               </div>
               <div className='grid grid-cols-4 gap-3 xl:px-28'>
                 {cards.map((el: ICard) => (
@@ -205,27 +185,11 @@ export default function HomePage() {
         );
       case 'gameover':
         return (
-          <div className='flex  h-screen w-full flex-col items-center justify-center'>
-            <div className='mx-2 flex flex-col items-center justify-center rounded border bg-white px-12 py-20 shadow-xl'>
-              {isSuccess ? (
-                <p className='text-xl text-red-500'>
-                  You Win
-                  <span className='text-2xl'>👾</span>
-                </p>
-              ) : (
-                <p className='text-xl text-red-500'>You Lose</p>
-              )}
-              <p className='text-xl text-red-500'>Your Score : {score}</p>
-              <br />
-              <Button
-                variant='primary'
-                className='w-full'
-                onClick={handleClickRestart}
-              >
-                Restart
-              </Button>
-            </div>
-          </div>
+          <GameGameOver
+            onRestart={handleClickRestart}
+            score={score}
+            isSuccess={isSuccess}
+          />
         );
     }
   };
@@ -241,7 +205,15 @@ export default function HomePage() {
           }}
         >
           <div className='container mx-auto max-h-screen min-h-screen px-2 lg:px-52'>
-            {renderGame(status)}
+            {status == 'menu' && <GameMenu onStart={handleClickStart} />}
+            {status == 'gameover' && (
+              <GameGameOver
+                onRestart={handleClickRestart}
+                score={score}
+                isSuccess={isSuccess}
+              />
+            )}
+            {status == 'playing' && renderGame(status)}
           </div>
         </motion.div>
       </main>
