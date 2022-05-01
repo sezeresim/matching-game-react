@@ -1,16 +1,16 @@
-import { FC } from 'react';
+import { FC } from 'react'
 
 interface IInputLabelProps extends React.HTMLProps<HTMLLabelElement> {
-  label: string;
+  label: string
 }
 
 const InputLabel: FC<IInputLabelProps> = (props) => {
-  const { label, ...rest } = props;
+  const { label, ...rest } = props
   return (
     <label className='flex items-center' {...rest}>
       {label}
     </label>
-  );
-};
+  )
+}
 
-export default InputLabel;
+export default InputLabel

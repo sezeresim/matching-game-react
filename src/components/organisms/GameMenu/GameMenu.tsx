@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 
-import { Button } from '../../atoms';
+import { Button } from '../../atoms'
 
 interface IGameMenuProps {
-  onStart: () => void;
+  onStart: () => void
 }
 
 const GameMenu: React.FC<IGameMenuProps> = (props) => {
-  const { onStart } = props;
+  const { onStart } = props
   return (
     <div className='flex h-screen w-full flex-col items-center justify-center'>
       <div className='mx-2 w-[300px] rounded border bg-white px-12 py-20 shadow-xl md:w-[600px]'>
@@ -22,7 +22,7 @@ const GameMenu: React.FC<IGameMenuProps> = (props) => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default GameMenu;
+export default GameMenu

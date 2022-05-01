@@ -44,4 +44,4 @@ export const fruits = [
     name: 'Kiwi',
     image: '/images/kiwi.png',
   }, */
-];
+]

@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC } from 'react'
 
-type IInputProps = React.HTMLProps<HTMLInputElement>;
+type IInputProps = React.HTMLProps<HTMLInputElement>
 
 const Input: FC<IInputProps> = (props) => {
-  const { ...rest } = props;
-  return <input {...rest} />;
-};
+  const { ...rest } = props
+  return <input {...rest} />
+}
 
-export default Input;
+export default Input

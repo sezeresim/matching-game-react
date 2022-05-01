@@ -1,5 +1,5 @@
-import cn from 'classnames';
-import React from 'react';
+import cn from 'classnames'
+import React from 'react'
 
 enum ButtonVariant {
   'primary',
@@ -9,14 +9,14 @@ enum ButtonVariant {
 
 export interface IButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children?: React.ReactNode;
-  variant?: keyof typeof ButtonVariant;
-  className?: string;
-  onClick?: () => void;
+  children?: React.ReactNode
+  variant?: keyof typeof ButtonVariant
+  className?: string
+  onClick?: () => void
 }
 
 const Button: React.FC<IButtonProps> = (props) => {
-  const { children, variant = 'primary', className, ...rest } = props;
+  const { children, variant = 'primary', className, ...rest } = props
 
   return (
     <button
@@ -38,7 +38,7 @@ const Button: React.FC<IButtonProps> = (props) => {
         {children}
       </span>
     </button>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

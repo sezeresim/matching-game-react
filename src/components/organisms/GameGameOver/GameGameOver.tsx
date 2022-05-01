@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
-import { Button } from '../../atoms';
+import { Button } from '../../atoms'
 
 interface IGameGameOverProps {
-  onRestart: () => void;
-  score: number;
-  isSuccess: boolean;
+  onRestart: () => void
+  score: number
+  isSuccess: boolean
 }
 
 const GameGameOver: React.FC<IGameGameOverProps> = (props) => {
-  const { onRestart, isSuccess, score } = props;
+  const { onRestart, isSuccess, score } = props
   return (
     <div className='flex h-screen w-full flex-col items-center justify-center '>
       <div className='mx-2 flex w-[300px] flex-col items-center justify-center rounded border bg-white px-12 py-20 shadow-xl md:w-[600px]'>
@@ -28,7 +28,7 @@ const GameGameOver: React.FC<IGameGameOverProps> = (props) => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default GameGameOver;
+export default GameGameOver

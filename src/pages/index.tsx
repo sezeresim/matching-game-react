@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import cn from 'classnames';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import cn from 'classnames'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { useEffect, useRef } from 'react'
 
-import { cardVoice } from '@/lib/sound';
+import { cardVoice } from '@/lib/sound'
 
-import { Seo } from '@/components/atoms';
-import { FormGroup } from '@/components/molecules';
-import { GameGameOver, GameMenu } from '@/components/organisms';
+import { Seo } from '@/components/atoms'
+import { FormGroup } from '@/components/molecules'
+import { GameGameOver, GameMenu } from '@/components/organisms'
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import {
   gameOver,
   gameReset,
@@ -23,103 +23,103 @@ import {
   updateSelectedCards,
   updateTimer,
   updateVoiceLevel,
-} from '@/store/slices/game.slice';
+} from '@/store/slices/game.slice'
 
-import { ICard } from '@/interfaces';
+import { ICard } from '@/interfaces'
 
 export default function HomePage() {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
   const { status, cards, timer, score, selectedCards, isSuccess, voiceLevel } =
-    useAppSelector(gameState);
+    useAppSelector(gameState)
 
   const handleClickCard = (el: ICard) => {
-    let newData;
+    let newData
     if (el.isOpen || el.isRemoved) {
-      return;
+      return
     }
     if (selectedCards.length < 2) {
-      dispatch(updateSelectedCards([...selectedCards, el]));
-      console.log('newData ~ newData', [...selectedCards, el]);
+      dispatch(updateSelectedCards([...selectedCards, el]))
+      console.log('newData ~ newData', [...selectedCards, el])
       newData = cards.map((fruit: ICard) => {
         const isRemoved =
-          selectedCards[0]?.name === fruit.name && fruit.name === el.name;
-        console.log('Match Status=', isRemoved);
+          selectedCards[0]?.name === fruit.name && fruit.name === el.name
+        console.log('Match Status=', isRemoved)
         if (isRemoved) {
-          dispatch(updateScore(timer));
+          dispatch(updateScore(timer))
         }
         if (selectedCards[0]?.id === fruit.id || fruit.id === el.id) {
           return {
             ...fruit,
             isOpen: true,
             isRemoved,
-          };
+          }
         } else {
           return {
             ...fruit,
             isOpen: false,
-          };
+          }
         }
-      });
+      })
     } else {
-      dispatch(updateCards([el]));
-      dispatch(updateSelectedCards([el]));
-      console.log('newData ~ newData', [el]);
+      dispatch(updateCards([el]))
+      dispatch(updateSelectedCards([el]))
+      console.log('newData ~ newData', [el])
       newData = cards.map((fruit) => {
         if (fruit.id === el.id) {
           return {
             ...fruit,
             isOpen: true,
-          };
+          }
         } else {
           return {
             ...fruit,
             isOpen: false,
-          };
+          }
         }
-      });
+      })
     }
-    dispatch(updateCards(newData));
-    cardVoice(voiceLevel).play();
-  };
+    dispatch(updateCards(newData))
+    cardVoice(voiceLevel).play()
+  }
 
   /* Game Start */
-  const timerInterval: any = useRef();
+  const timerInterval: any = useRef()
   const handleClickStart = () => {
-    dispatch(gameStart());
+    dispatch(gameStart())
     timerInterval.current = setInterval(() => {
-      dispatch(updateTimer(-1));
-    }, 1000);
-  };
+      dispatch(updateTimer(-1))
+    }, 1000)
+  }
 
   /* Game Over */
   const handleGameOver = () => {
     const isAllCardRemoved =
-      cards.filter((card: ICard) => card.isRemoved).length == cards.length;
+      cards.filter((card: ICard) => card.isRemoved).length == cards.length
     if (timer === 0 || isAllCardRemoved) {
-      dispatch(gameOver(isAllCardRemoved));
-      clearInterval(timerInterval.current);
+      dispatch(gameOver(isAllCardRemoved))
+      clearInterval(timerInterval.current)
     }
-  };
+  }
 
   useEffect(() => {
-    handleGameOver();
-  }, [timer]);
+    handleGameOver()
+  }, [timer])
 
   /* Game ReStart */
   const handleClickRestart = () => {
-    dispatch(gameReset());
-    handleClickStart();
-  };
+    dispatch(gameReset())
+    handleClickStart()
+  }
 
   /* Handel Voice Level */
   const handleVoiceLevel = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(updateVoiceLevel(Number(e.target.value)));
-  };
+    dispatch(updateVoiceLevel(Number(e.target.value)))
+  }
 
   const renderGame = (status: IGameStatus) => {
     switch (status) {
       case 'menu':
-        return <GameMenu onStart={handleClickStart} />;
+        return <GameMenu onStart={handleClickStart} />
       case 'playing':
         return (
           <motion.div
@@ -181,7 +181,7 @@ export default function HomePage() {
               </div>
             </div>
           </motion.div>
-        );
+        )
       case 'gameover':
         return (
           <GameGameOver
@@ -189,9 +189,9 @@ export default function HomePage() {
             score={score}
             isSuccess={isSuccess}
           />
-        );
+        )
     }
-  };
+  }
 
   return (
     <>
@@ -209,5 +209,5 @@ export default function HomePage() {
         </motion.div>
       </main>
     </>
-  );
+  )
 }
