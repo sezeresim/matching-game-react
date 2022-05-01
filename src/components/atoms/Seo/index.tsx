@@ -1,5 +1,5 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 const defaultMeta = {
   title: 'Sezer Esim',
@@ -9,22 +9,22 @@ const defaultMeta = {
   type: 'website',
   robots: 'follow, index',
   image: 'https://i.ibb.co/SxDKVbT/screnshot.png',
-};
+}
 
 type SeoProps = {
-  date?: string;
-  templateTitle?: string;
-} & Partial<typeof defaultMeta>;
+  date?: string
+  templateTitle?: string
+} & Partial<typeof defaultMeta>
 
 export default function Seo(props: SeoProps) {
-  const router = useRouter();
+  const router = useRouter()
   const meta = {
     ...defaultMeta,
     ...props,
-  };
+  }
   meta['title'] = props.templateTitle
     ? `${props.templateTitle} | ${meta.siteName}`
-    : meta.title;
+    : meta.title
 
   return (
     <Head>
@@ -46,5 +46,5 @@ export default function Seo(props: SeoProps) {
       <meta name='twitter:description' content={meta.description} />
       <meta name='twitter:image' content={meta.image} />
     </Head>
-  );
+  )
 }

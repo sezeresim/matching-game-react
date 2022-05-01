@@ -1,21 +1,22 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { fruits } from '@/data/fruits';
+import { fruits } from '@/data/fruits'
 
-import { ICard } from '@/interfaces';
-import { shuffle } from '@/utils/shuffle';
+import { ICard } from '@/interfaces'
+import { shuffle } from '@/utils/shuffle'
 
-import type { RootState } from '..';
+import type { RootState } from '..'
 
-export type IGameStatus = 'menu' | 'playing' | 'gameover';
+export type IGameStatus = 'menu' | 'playing' | 'gameover'
 
 export interface GameState {
-  status: IGameStatus;
-  cards: ICard[];
-  timer: number;
-  score: number;
-  selectedCards: ICard[];
-  isSuccess: boolean;
+  status: IGameStatus
+  cards: ICard[]
+  timer: number
+  score: number
+  selectedCards: ICard[]
+  isSuccess: boolean
+  voiceLevel: number
 }
 
 const initialState: GameState = {
@@ -37,34 +38,38 @@ const initialState: GameState = {
       isRemoved: false,
     }))
   ),
-};
+  voiceLevel: 2,
+}
 
 export const gameSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
     gameStart: (state) => {
-      state.status = 'playing';
+      state.status = 'playing'
     },
     gameReset: () => initialState,
     gameOver: (state, action: PayloadAction<boolean>) => {
-      state.status = 'gameover';
-      state.isSuccess = action.payload;
+      state.status = 'gameover'
+      state.isSuccess = action.payload
     },
     updateCards: (state, action: PayloadAction<ICard[]>) => {
-      state.cards = action.payload;
+      state.cards = action.payload
     },
     updateTimer: (state, action: PayloadAction<number>) => {
-      state.timer = state.timer + action.payload;
+      state.timer = state.timer + action.payload
     },
     updateScore: (state, action: PayloadAction<number>) => {
-      state.score = state.score + action.payload;
+      state.score = state.score + action.payload
     },
     updateSelectedCards: (state, action: PayloadAction<ICard[]>) => {
-      state.selectedCards = action.payload;
+      state.selectedCards = action.payload
+    },
+    updateVoiceLevel: (state, action: PayloadAction<number>) => {
+      state.voiceLevel = action.payload
     },
   },
-});
+})
 export const {
   gameStart,
   updateCards,
@@ -73,8 +78,9 @@ export const {
   updateScore,
   updateSelectedCards,
   gameReset,
-} = gameSlice.actions;
+  updateVoiceLevel,
+} = gameSlice.actions
 
-export const gameState = (state: RootState) => state.game;
+export const gameState = (state: RootState) => state.game
 
-export default gameSlice.reducer;
+export default gameSlice.reducer
